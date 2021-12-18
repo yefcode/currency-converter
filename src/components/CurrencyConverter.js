@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import ExchangeRate from "./ExchangeRate";
+import CurrencyRowFields from "./CurrencyRowFields";
 import axios from "axios";
 
 const CurrencyConverter = () => {
-    const currencies = ['BTC', 'ETH', 'USD', 'EUR', 'XRP', 'LTC', 'ADA', 'COP'];
+
     const [chosenPrimaryCurrency, setChosenPrimaryCurrency] = useState('BTC');
     const [chosenSecondaryCurrency, setChosenSecondaryCurrency] = useState('USD');
     const [amount, setAmount] = useState(1);
@@ -16,6 +17,31 @@ const CurrencyConverter = () => {
         exchangeRate: 0
     });
     const [result, setResult] = useState(0);
+
+    const amountPrimaryCurrency = {
+        amountName:"currency-amount-1",
+        amountValue:amount,
+        disable:false,
+        onChangeAmount:(e) => setAmount(e.target.value),
+    }
+
+    const amountSecondaryCurrency = {
+        amountName:"currency-amount-2",
+        amountValue:result,
+        disable:true,
+    }
+
+    const primaryCurrencyOption = {
+        chosenCurrencyOption:chosenPrimaryCurrency,
+        currencyOptionName:"currency-option-1",
+        onChangeCurrencyOption:(e) => setChosenPrimaryCurrency(e.target.value),
+    }
+
+    const secondaryCurrencyOption = {
+        chosenCurrencyOption:chosenSecondaryCurrency,
+        currencyOptionName:"currency-option-2",
+        onChangeCurrencyOption:(e) => setChosenSecondaryCurrency(e.target.value),
+    }
 
     const convert = () => {
         const options = {
@@ -47,47 +73,16 @@ const CurrencyConverter = () => {
             <div className="input-box">
                 <table>
                     <tbody>
-                        <tr>
-                            <td><div className="label">Primary Currency</div></td>
-                            <td>
-                                <input
-                                    type="number"
-                                    name="currency-amount-1"
-                                    value={amount}
-                                    onChange={(e) => setAmount(e.target.value)}
-                                />
-                            </td>
-                            <td>
-                                <select
-                                    value={chosenPrimaryCurrency}
-                                    name="currency-option-1"
-                                    className="currency-options"
-                                    onChange={(e) => setChosenPrimaryCurrency(e.target.value)}
-                                >
-                                    {currencies.map( (currency, _index) => (<option key={_index}>{currency}</option>))}
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><div className="label">Secondary Currency</div></td>
-                            <td>
-                                <input
-                                    name="currency-amount-2"
-                                    value={result}
-                                    disabled={true}
-                                />
-                            </td>
-                            <td>
-                                <select
-                                    value={chosenSecondaryCurrency}
-                                    name="currency-option-2"
-                                    className="currency-options"
-                                    onChange={(e) => setChosenSecondaryCurrency(e.target.value)}
-                                >
-                                    {currencies.map( (currency, _index) => (<option key={_index}>{currency}</option>))}
-                                </select>
-                            </td>
-                        </tr>
+                        <CurrencyRowFields
+                            label="From"
+                            amount={amountPrimaryCurrency}
+                            currencyOption={primaryCurrencyOption}
+                        />
+                        <CurrencyRowFields
+                            label="to"
+                            amount={amountSecondaryCurrency}
+                            currencyOption={secondaryCurrencyOption}
+                        />
                     </tbody>
                 </table>
                 <button id="convert-button" onClick={convert}>Convert</button>
